@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titulo %}Finalizar pedido{% endblock %}
+{% block conteudo %}
+<h1>Finalizar pedido</h1>
+<form method="post" class="formulario largo">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <fieldset>
+    <legend>Endereço de entrega</legend>
+    {% for e in usuario.enderecos %}
+    <label class="opcao"><input type="radio" name="endereco_id" value="{{ e.id }}" {{ 'checked' if loop.first and not form.get('rua') }}> {{ e.resumo() }}</label>
+    {% endfor %}
+    <label class="opcao"><input type="radio" name="endereco_id" value="novo" {{ 'checked' if not usuario.enderecos or form.get('rua') }}> Usar um novo endereço</label>
+    <div id="novo-endereco">
+      <label for="cep">CEP</label><input id="cep" name="cep" value="{{ form.get('cep', '') }}" inputmode="numeric" maxlength="9" autocomplete="postal-code">
+      <label for="rua">Rua</label><input id="rua" name="rua" value="{{ form.get('rua', '') }}" autocomplete="address-line1">
+      <label for="numero">Número</label><input id="numero" name="numero" value="{{ form.get('numero', '') }}">
+      <label for="complemento">Complemento</label><input id="complemento" name="complemento" value="{{ form.get('complemento', '') }}">
+      <label for="bairro">Bairro</label><input id="bairro" name="bairro" value="{{ form.get('bairro', '') }}">
+      <label for="cidade">Cidade</label><input id="cidade" name="cidade" value="{{ form.get('cidade', '') }}">
+      <label for="uf">UF</label>
+      <select id="uf" name="uf"><option value="">--</option>{% for u in ufs %}<option {{ 'selected' if form.get('uf') == u }}>{{ u }}</option>{% endfor %}</select>
+    </div>
+  </fieldset>
+  <label for="observacao">Observações (opcional)</label>
+  <input id="observacao" name="observacao" maxlength="200" value="{{ form.get('observacao', '') }}">
+  <h2>Resumo</h2>
+  <ul>{% for i in itens %}<li>{{ i.quantidade }}× {{ i.produto.nome }} — {{ i.subtotal|moeda }}</li>{% endfor %}</ul>
+  <dl class="totais">
+    <dt>Subtotal</dt><dd>{{ subtotal|moeda }}</dd>
+    <dt>Frete</dt><dd>{{ frete|moeda if frete > 0 else 'Grátis' }}</dd>
+    <dt>Total</dt><dd><strong>{{ total|moeda }}</strong></dd>
+  </dl>
+  <button type="submit">Ir para o pagamento</button>
+</form>
+{% endblock %}

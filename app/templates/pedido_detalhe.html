@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Pedido #{{ pedido.id }}{% endblock %}
+{% block conteudo %}
+<h1>Pedido #{{ pedido.id }} <span class="selo {{ pedido.status|lower }}">{{ pedido.status|status }}</span></h1>
+<p>Entrega em: {{ pedido.endereco.resumo() }}</p>
+<ul>{% for i in pedido.itens %}<li>{{ i.quantidade }}× {{ i.produto.nome }} — {{ i.subtotal()|moeda }}</li>{% endfor %}</ul>
+<dl class="totais">
+  <dt>Subtotal</dt><dd>{{ pedido.subtotal|moeda }}</dd>
+  <dt>Frete</dt><dd>{{ pedido.frete|moeda if pedido.frete > 0 else 'Grátis' }}</dd>
+  <dt>Total</dt><dd><strong>{{ pedido.total|moeda }}</strong></dd>
+</dl>
+{% if pedido.pagamento %}<p>Pagamento: {{ formas[pedido.pagamento.forma] }} — {{ pedido.pagamento.status|status }}</p>{% endif %}
+{% if pedido.entrega and pedido.entrega.entregue_em %}<p>Entregue em {{ pedido.entrega.entregue_em.strftime('%d/%m/%Y %H:%M') }}.</p>{% endif %}
+{% if pedido.status == 'AGUARDANDO_PAGAMENTO' %}<a class="botao" href="{{ url_for('pedidos.pagar', pedido_id=pedido.id) }}">Pagar agora</a>{% endif %}
+{% if pedido.pode_cancelar() %}
+<form method="post" action="{{ url_for('pedidos.cancelar', pedido_id=pedido.id) }}" class="inline" data-confirmar="Deseja realmente cancelar este pedido?">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button type="submit" class="perigo">Cancelar pedido</button>
+</form>
+{% endif %}
+{% endblock %}

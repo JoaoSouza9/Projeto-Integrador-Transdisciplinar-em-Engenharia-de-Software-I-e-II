@@ -1,0 +1,53 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #FFF4E5
+skinparam usecaseBorderColor #8A4B08
+skinparam actorBackgroundColor #FFE0B2
+skinparam actorBorderColor #8A4B08
+skinparam defaultFontName DejaVu Sans
+skinparam dpi 130
+
+actor Visitante
+actor Cliente
+actor Administrador
+actor "Gateway de\nPagamento" as GW <<sistema>>
+Cliente --|> Visitante
+
+rectangle "App de Vendas de Cupcakes" {
+  usecase "UC01 Cadastrar-se" as UC01
+  usecase "UC02 Autenticar-se" as UC02
+  usecase "UC03 Consultar vitrine\n(buscar e filtrar)" as UC03
+  usecase "UC04 Ver detalhes\ndo cupcake" as UC04
+  usecase "UC05 Gerenciar carrinho" as UC05
+  usecase "UC06 Informar endereço\nde entrega" as UC06
+  usecase "UC07 Finalizar pedido" as UC07
+  usecase "UC08 Calcular frete" as UC08
+  usecase "UC09 Pagar pedido" as UC09
+  usecase "UC10 Acompanhar pedidos" as UC10
+  usecase "UC11 Cancelar pedido" as UC11
+  usecase "UC12 Gerenciar produtos" as UC12
+  usecase "UC13 Consultar pedidos" as UC13
+  usecase "UC14 Atualizar status\ndo pedido" as UC14
+}
+
+Visitante --> UC01
+Visitante --> UC03
+Visitante --> UC04
+Visitante --> UC05
+Cliente --> UC02
+Cliente --> UC07
+Cliente --> UC10
+Administrador --> UC02
+Administrador --> UC12
+Administrador --> UC13
+
+UC07 ..> UC02 : <<include>>
+UC07 ..> UC06 : <<include>>
+UC07 ..> UC08 : <<include>>
+UC07 ..> UC09 : <<include>>
+UC11 .u.> UC10 : <<extend>>
+UC14 .u.> UC13 : <<extend>>
+UC09 --> GW
+@enduml

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}Admin · Pedidos{% endblock %}
+{% block conteudo %}
+<h1>Pedidos</h1>
+<p><a href="{{ url_for('admin.produtos') }}">Gerenciar produtos →</a></p>
+<form method="get" class="filtro">
+  <label for="status">Status</label>
+  <select id="status" name="status"><option value="">Todos</option>
+    {% for s in todos_status %}<option value="{{ s }}" {{ 'selected' if s == status_atual }}>{{ s|status }}</option>{% endfor %}
+  </select>
+  <button type="submit">Filtrar</button>
+</form>
+{% if pedidos %}
+<div class="tabela-rolavel"><table>
+  <thead><tr><th>#</th><th>Cliente</th><th>Total</th><th>Status</th><th>Atualizar</th></tr></thead>
+  <tbody>{% for p in pedidos %}
+  <tr><td>{{ p.id }}</td><td>{{ p.usuario.nome }}</td><td>{{ p.total|moeda }}</td>
+  <td><span class="selo {{ p.status|lower }}">{{ p.status|status }}</span></td>
+  <td>{% if transicoes[p.status] %}
+    <form method="post" action="{{ url_for('admin.atualizar_status', pedido_id=p.id) }}" class="inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label class="so-leitor" for="s{{ p.id }}">Novo status do pedido {{ p.id }}</label>
+      <select id="s{{ p.id }}" name="status">{% for s in transicoes[p.status]|sort %}<option value="{{ s }}">{{ s|status }}</option>{% endfor %}</select>
+      <button type="submit" class="sec">Aplicar</button>
+    </form>{% else %}—{% endif %}</td></tr>
+  {% endfor %}</tbody>
+</table></div>
+{% else %}<p class="vazio">Nenhum pedido encontrado.</p>{% endif %}
+{% endblock %}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Cupcakes{% endblock %} · Doce Encanto Cupcakes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="topo">
+  <a class="marca" href="{{ url_for('catalogo.vitrine') }}">🧁 Doce Encanto</a>
+  <nav aria-label="Principal">
+    <a href="{{ url_for('catalogo.vitrine') }}">Vitrine</a>
+    {% if usuario %}
+      <a href="{{ url_for('pedidos.meus_pedidos') }}">Meus pedidos</a>
+      {% if usuario.eh_admin() %}<a href="{{ url_for('admin.pedidos') }}">Admin</a>{% endif %}
+      <form method="post" action="{{ url_for('auth.logout') }}" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="link" type="submit">Sair ({{ usuario.nome.split()[0] }})</button>
+      </form>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}">Entrar</a>
+      <a href="{{ url_for('auth.cadastro') }}">Cadastrar</a>
+    {% endif %}
+    <a class="carrinho" href="{{ url_for('carrinho.ver') }}" aria-label="Carrinho, {{ qtd_carrinho }} itens">🛒 <span>{{ qtd_carrinho }}</span></a>
+  </nav>
+</header>
+<main id="conteudo" tabindex="-1">
+  <div aria-live="polite">
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in msgs %}<p class="msg {{ cat }}" role="{{ 'alert' if cat == 'erro' else 'status' }}">{{ msg }}</p>{% endfor %}
+  {% endwith %}
+  </div>
+  {% block conteudo %}{% endblock %}
+</main>
+<footer class="rodape">Projeto Integrador · Engenharia de Software II · pagamento simulado, sem cobrança real.</footer>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+@startuml
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam dpi 130
+skinparam sequenceMessageAlign center
+actor Cliente
+boundary "TelaCheckout\n(View)" as View
+control "PedidoController" as Ctrl
+entity "Pedido\n(Model)" as Pedido
+control "ServicoFrete" as Frete
+control "ServicoPagamento" as Pag
+database "Banco de Dados" as DB
+
+Cliente -> View : confirma carrinho e endereço
+View -> Ctrl : POST /checkout
+Ctrl -> Ctrl : validar sessão, carrinho e endereço (RN05)
+alt dados inválidos
+  Ctrl --> View : mensagens de erro
+  View --> Cliente : exibe erros no formulário
+else dados válidos
+  Ctrl -> Frete : calcular(subtotal)
+  Frete --> Ctrl : valor do frete (RN04)
+  Ctrl -> Pedido : criar(itens, endereço, frete)
+  Pedido -> DB : verifica e reserva estoque (RN06)
+  alt estoque insuficiente
+    DB --> Pedido : erro
+    Pedido --> Ctrl : EstoqueInsuficiente
+    Ctrl --> View : aviso de item indisponível
+  else estoque reservado
+    Pedido -> DB : INSERT pedido + itens (AGUARDANDO_PAGAMENTO)
+    Pedido --> Ctrl : pedido criado
+    Ctrl --> View : redireciona para pagamento
+    Cliente -> View : escolhe forma de pagamento
+    View -> Ctrl : POST /pedidos/{id}/pagar
+    Ctrl -> Pag : processar(forma, valor, dados)
+    alt pagamento aprovado (PIX/cartão) ou dinheiro na entrega
+      Pag --> Ctrl : APROVADO / PENDENTE
+      Ctrl -> Pedido : avancar_status(CONFIRMADO)
+      Pedido -> DB : UPDATE pedido, INSERT pagamento
+      Ctrl --> View : tela de resumo do pedido
+      View --> Cliente : "Pedido confirmado"
+    else cartão recusado
+      Pag --> Ctrl : RECUSADO
+      Ctrl --> View : mensagem de recusa
+      View --> Cliente : permite tentar outra forma
+    end
+  end
+end
+@enduml

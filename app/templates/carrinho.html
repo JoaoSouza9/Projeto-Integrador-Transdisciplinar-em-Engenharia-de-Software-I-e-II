@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block titulo %}Carrinho{% endblock %}
+{% block conteudo %}
+<h1>Seu carrinho</h1>
+{% if itens %}
+<div class="tabela-rolavel">
+<table>
+  <thead><tr><th>Produto</th><th>Preço</th><th>Qtd</th><th>Subtotal</th><th><span class="so-leitor">Ações</span></th></tr></thead>
+  <tbody>
+  {% for i in itens %}
+  <tr>
+    <td>{{ i.produto.nome }}</td><td>{{ i.produto.preco|moeda }}</td>
+    <td>
+      <form method="post" action="{{ url_for('carrinho.atualizar', produto_id=i.produto.id) }}" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label class="so-leitor" for="q{{ i.produto.id }}">Quantidade de {{ i.produto.nome }}</label>
+        <input id="q{{ i.produto.id }}" class="qtd" type="number" name="quantidade" value="{{ i.quantidade }}" min="1" max="{{ [i.produto.estoque, 20]|min }}">
+        <button type="submit" class="sec">Atualizar</button>
+      </form>
+    </td>
+    <td>{{ i.subtotal|moeda }}</td>
+    <td>
+      <form method="post" action="{{ url_for('carrinho.remover', produto_id=i.produto.id) }}" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="perigo">Remover</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<dl class="totais">
+  <dt>Subtotal</dt><dd>{{ subtotal|moeda }}</dd>
+  <dt>Frete</dt><dd>{{ frete|moeda if frete > 0 else 'Grátis' }}</dd>
+  <dt>Total</dt><dd><strong>{{ total|moeda }}</strong></dd>
+</dl>
+<p class="dica">Frete grátis em compras a partir de R$ 120,00.</p>
+<a class="botao" href="{{ url_for('pedidos.checkout') }}">Finalizar pedido</a>
+{% else %}
+<p class="vazio">Seu carrinho está vazio. <a href="{{ url_for('catalogo.vitrine') }}">Ver cupcakes</a></p>
+{% endif %}
+{% endblock %}

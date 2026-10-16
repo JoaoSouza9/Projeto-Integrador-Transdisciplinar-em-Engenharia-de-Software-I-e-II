@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titulo %}Admin · Produtos{% endblock %}
+{% block conteudo %}
+<h1>Produtos</h1>
+<p><a class="botao" href="{{ url_for('admin.novo_produto') }}">Novo produto</a> <a href="{{ url_for('admin.pedidos') }}">← Pedidos</a></p>
+<div class="tabela-rolavel"><table>
+  <thead><tr><th>Nome</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Ativo</th><th></th></tr></thead>
+  <tbody>{% for p in produtos %}
+  <tr><td>{{ p.nome }}</td><td>{{ p.categoria.nome }}</td><td>{{ p.preco|moeda }}</td><td>{{ p.estoque }}</td><td>{{ 'Sim' if p.ativo else 'Não' }}</td>
+  <td><a href="{{ url_for('admin.editar_produto', produto_id=p.id) }}">Editar</a>
+    <form method="post" action="{{ url_for('admin.excluir_produto', produto_id=p.id) }}" class="inline" data-confirmar="Excluir {{ p.nome }}?">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="perigo" type="submit">Excluir</button></form></td></tr>
+  {% endfor %}</tbody>
+</table></div>
+{% endblock %}

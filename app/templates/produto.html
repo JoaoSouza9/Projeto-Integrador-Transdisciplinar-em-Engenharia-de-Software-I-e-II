@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}{{ produto.nome }}{% endblock %}
+{% block conteudo %}
+<p><a href="{{ url_for('catalogo.vitrine') }}">← Voltar à vitrine</a></p>
+<article class="detalhe">
+  <div class="foto grande" aria-hidden="true">{% if produto.imagem_url %}<img src="{{ produto.imagem_url }}" alt="">{% else %}🧁{% endif %}</div>
+  <div>
+    <h1>{{ produto.nome }}</h1>
+    <p class="cat">{{ produto.categoria.nome }}</p>
+    <p>{{ produto.descricao or 'Sem descrição.' }}</p>
+    <p class="preco">{{ produto.preco|moeda }}</p>
+    {% if produto.disponivel(1) %}
+    <form method="post" action="{{ url_for('carrinho.adicionar', produto_id=produto.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="quantidade">Quantidade</label>
+      <input id="quantidade" type="number" name="quantidade" value="1" min="1" max="{{ [produto.estoque, 20]|min }}" required>
+      <button type="submit">Adicionar ao carrinho</button>
+    </form>
+    {% else %}<p class="msg aviso">Produto esgotado no momento.</p>{% endif %}
+  </div>
+</article>
+{% endblock %}

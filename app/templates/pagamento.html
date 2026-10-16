@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}Pagamento{% endblock %}
+{% block conteudo %}
+<h1>Pagamento do pedido #{{ pedido.id }}</h1>
+<p>Total a pagar: <strong>{{ pedido.total|moeda }}</strong></p>
+<form method="post" class="formulario">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <fieldset>
+    <legend>Forma de pagamento</legend>
+    {% for chave, nome in formas.items() %}
+    <label class="opcao"><input type="radio" name="forma" value="{{ chave }}" {{ 'checked' if loop.first }}> {{ nome }}</label>
+    {% endfor %}
+  </fieldset>
+  <div id="dados-cartao" hidden>
+    <label for="numero">Número do cartão</label><input id="numero" name="numero" inputmode="numeric" autocomplete="cc-number">
+    <label for="nome">Nome impresso</label><input id="nome" name="nome" autocomplete="cc-name">
+    <label for="cvv">CVV</label><input id="cvv" name="cvv" inputmode="numeric" maxlength="4" autocomplete="cc-csc">
+    <p class="dica">Ambiente de teste: nenhum dado do cartão é armazenado.</p>
+  </div>
+  <button type="submit">Pagar</button>
+</form>
+{% endblock %}

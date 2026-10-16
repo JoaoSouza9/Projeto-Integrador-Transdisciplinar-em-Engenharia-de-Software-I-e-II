@@ -1,0 +1,86 @@
+@startuml
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName DejaVu Sans
+skinparam dpi 130
+skinparam classBackgroundColor #FFF4E5
+skinparam classBorderColor #8A4B08
+hide empty members
+
+class Usuario {
+  - id : Integer
+  - nome : String
+  - email : String
+  - senha_hash : String
+  - telefone : String
+  - perfil : String
+  - criado_em : DateTime
+  + definir_senha(senha) : void
+  + verificar_senha(senha) : Boolean
+  + eh_admin() : Boolean
+}
+class Endereco {
+  - id : Integer
+  - rua : String
+  - numero : String
+  - complemento : String
+  - bairro : String
+  - cidade : String
+  - uf : String
+  - cep : String
+}
+class Categoria {
+  - id : Integer
+  - nome : String
+}
+class Produto {
+  - id : Integer
+  - nome : String
+  - descricao : String
+  - preco : Decimal
+  - estoque : Integer
+  - imagem_url : String
+  - ativo : Boolean
+  + disponivel(qtd) : Boolean
+}
+class Pedido {
+  - id : Integer
+  - status : String
+  - subtotal : Decimal
+  - frete : Decimal
+  - total : Decimal
+  - observacao : String
+  - criado_em : DateTime
+  + calcular_totais() : void
+  + pode_cancelar() : Boolean
+  + avancar_status(novo) : Boolean
+}
+class ItemPedido {
+  - id : Integer
+  - quantidade : Integer
+  - preco_unitario : Decimal
+  + subtotal() : Decimal
+}
+class Pagamento {
+  - id : Integer
+  - forma : String
+  - status : String
+  - valor : Decimal
+  - criado_em : DateTime
+}
+class Entrega {
+  - id : Integer
+  - entregador : String
+  - previsao : Date
+  - entregue_em : DateTime
+}
+
+Usuario "1" -- "0..*" Endereco : possui >
+Usuario "1" -- "0..*" Pedido : realiza >
+Pedido "0..*" -- "1" Endereco : é entregue em >
+Categoria "1" -- "0..*" Produto : classifica >
+Pedido "1" *-- "1..*" ItemPedido : composto por >
+ItemPedido "0..*" -- "1" Produto : refere-se a >
+Pedido "1" *-- "0..1" Pagamento : é pago por >
+Pedido "1" *-- "0..1" Entrega : gera >
+@enduml

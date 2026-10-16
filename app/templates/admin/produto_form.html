@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}Admin · Produto{% endblock %}
+{% block conteudo %}
+{% set f = form if form else {} %}
+<h1>{{ 'Editar' if produto else 'Novo' }} produto</h1>
+<form method="post" class="formulario">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="nome">Nome</label><input id="nome" name="nome" required value="{{ f.get('nome', produto.nome if produto else '') }}">
+  <label for="descricao">Descrição</label><input id="descricao" name="descricao" maxlength="300" value="{{ f.get('descricao', (produto.descricao or '') if produto else '') }}">
+  <label for="categoria_id">Categoria</label>
+  <select id="categoria_id" name="categoria_id" required>{% for c in categorias %}
+    <option value="{{ c.id }}" {{ 'selected' if (f.get('categoria_id') | string) == (c.id | string) or (not f and produto and produto.categoria_id == c.id) }}>{{ c.nome }}</option>{% endfor %}</select>
+  <label for="preco">Preço (R$)</label><input id="preco" name="preco" required inputmode="decimal" value="{{ f.get('preco', produto.preco if produto else '') }}">
+  <label for="estoque">Estoque</label><input id="estoque" type="number" min="0" name="estoque" required value="{{ f.get('estoque', produto.estoque if produto else 0) }}">
+  <label for="imagem_url">URL da imagem (opcional)</label><input id="imagem_url" name="imagem_url" value="{{ f.get('imagem_url', (produto.imagem_url or '') if produto else '') }}">
+  <label class="opcao"><input type="checkbox" name="ativo" {{ 'checked' if (not f and (not produto or produto.ativo)) or f.get('ativo') }}> Ativo na vitrine</label>
+  <button type="submit">Salvar</button> <a href="{{ url_for('admin.produtos') }}">Cancelar</a>
+</form>
+{% endblock %}

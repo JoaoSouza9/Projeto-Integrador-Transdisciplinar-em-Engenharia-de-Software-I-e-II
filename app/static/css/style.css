@@ -1,0 +1,47 @@
+:root{--rosa:#c2185b;--rosa-esc:#8e1244;--creme:#fff8f0;--marrom:#4e2a14;--cinza:#6b5b53;--borda:#e8d5c4}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--creme);color:var(--marrom);line-height:1.5}
+a{color:var(--rosa-esc)}
+.pular{position:absolute;left:-999px}.pular:focus{left:8px;top:8px;background:#fff;padding:8px;z-index:9}
+.so-leitor{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.topo{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding:12px 20px;background:var(--rosa);color:#fff}
+.topo a,.topo button.link{color:#fff;text-decoration:none;font-weight:600}
+.topo nav{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.marca{font-size:1.3rem}
+main{max-width:1000px;margin:0 auto;padding:20px}
+h1{margin-top:0}
+.msg{padding:10px 14px;border-radius:8px;border:1px solid;margin:8px 0}
+.msg.sucesso{background:#e8f5e9;border-color:#2e7d32}.msg.erro{background:#ffebee;border-color:#c62828}
+.msg.aviso{background:#fff8e1;border-color:#b26a00}.msg.info{background:#e3f2fd;border-color:#1565c0}
+button,.botao{background:var(--rosa-esc);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:1rem;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,.botao:hover{background:#6d0e35}
+button.sec{background:#fff;color:var(--rosa-esc);border:1px solid var(--rosa-esc)}
+button.perigo{background:#fff;color:#b71c1c;border:1px solid #b71c1c}
+button.link{background:none;padding:0;border:0;text-decoration:underline}
+:focus-visible{outline:3px solid #ffb300;outline-offset:2px}
+input,select{padding:9px;border:1px solid #b9a090;border-radius:6px;font-size:1rem;max-width:100%}
+label{display:block;margin-top:10px;font-weight:600}
+.opcao{font-weight:400;display:flex;gap:8px;align-items:flex-start}
+.formulario{max-width:460px}.formulario.largo{max-width:640px}
+.formulario input:not([type=radio]):not([type=checkbox]),.formulario select{width:100%}
+.formulario button{margin-top:16px}
+fieldset{border:1px solid var(--borda);border-radius:8px;margin:12px 0}
+.inline{display:inline}
+.filtro{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}.filtro label{margin:0}
+.grade{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.cartao{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:14px;text-align:center}
+.cartao h2{font-size:1.05rem;margin:6px 0}.cartao a{text-decoration:none}
+.foto{display:block;font-size:3.5rem;background:#fde7ef;border-radius:10px;padding:10px}.foto img{max-width:100%;height:120px;object-fit:cover;border-radius:8px}
+.foto.grande{font-size:7rem;text-align:center}
+.cat{color:var(--cinza);font-size:.9rem;margin:0}.preco{font-size:1.2rem;font-weight:700;color:var(--rosa-esc)}
+.detalhe{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.tabela-rolavel{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{padding:10px;border-bottom:1px solid var(--borda);text-align:left}
+.qtd{width:70px}
+.totais{display:grid;grid-template-columns:auto auto;max-width:300px;gap:4px 24px}.totais dd{margin:0;text-align:right}
+.dica{color:var(--cinza);font-size:.9rem}.vazio{padding:24px;text-align:center;background:#fff;border-radius:8px}
+.selo{font-size:.8rem;padding:3px 10px;border-radius:99px;background:#eee;font-weight:600}
+.selo.confirmado,.selo.em_preparo{background:#e3f2fd}.selo.entregue{background:#e8f5e9}.selo.cancelado{background:#ffebee}
+.rodape{text-align:center;color:var(--cinza);font-size:.85rem;padding:24px}
+@media(max-width:640px){.detalhe{grid-template-columns:1fr}.topo{justify-content:center}}

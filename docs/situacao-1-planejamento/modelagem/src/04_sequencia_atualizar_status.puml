@@ -1,0 +1,32 @@
+@startuml
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam dpi 130
+actor Administrador
+boundary "TelaAdminPedidos\n(View)" as View
+control "AdminController" as Ctrl
+entity "Pedido\n(Model)" as Pedido
+database "Banco de Dados" as DB
+
+Administrador -> View : seleciona pedido e novo status
+View -> Ctrl : POST /admin/pedidos/{id}/status
+Ctrl -> Ctrl : verificar perfil ADMIN (RN11)
+alt não é administrador
+  Ctrl --> View : 403 acesso negado
+else administrador
+  Ctrl -> Pedido : avancar_status(novo)
+  Pedido -> Pedido : validar transição (RN09)
+  alt transição inválida
+    Pedido --> Ctrl : False
+    Ctrl --> View : mensagem de erro
+  else transição válida
+    Pedido -> DB : UPDATE pedido
+    opt novo status = ENTREGUE
+      Pedido -> DB : registra entrega e baixa pagamento em dinheiro
+    end
+    Pedido --> Ctrl : True
+    Ctrl --> View : lista atualizada
+    View --> Administrador : "Status atualizado"
+  end
+end
+@enduml
